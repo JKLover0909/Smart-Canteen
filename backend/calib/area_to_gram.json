@@ -1,0 +1,101 @@
+{
+  "source": "nutrition5k (median gram/cm², đĩa Ø26cm)",
+  "plate_diameter_cm": 26.0,
+  "n_train_samples": 220,
+  "groups": {
+    "rau_cu": {
+      "g_per_cm2": 1.1215,
+      "n_samples": 65,
+      "ratio_p25": 0.941,
+      "ratio_p75": 1.7383
+    },
+    "rau_xanh": {
+      "g_per_cm2": 0.8886,
+      "n_samples": 49,
+      "ratio_p25": 0.7715,
+      "ratio_p75": 1.1272
+    },
+    "com": {
+      "g_per_cm2": 0.7091,
+      "n_samples": 10,
+      "ratio_p25": 0.6709,
+      "ratio_p75": 0.9303
+    },
+    "trai_cay": {
+      "g_per_cm2": 3.705,
+      "n_samples": 80,
+      "ratio_p25": 2.4367,
+      "ratio_p75": 4.1571
+    }
+  },
+  "eval_on_test": {
+    "rau_cu": {
+      "n": 12,
+      "mae_g": 35.3,
+      "mape_pct": 43.3,
+      "mean_gt_g": 83.2
+    },
+    "trai_cay": {
+      "n": 7,
+      "mae_g": 63.9,
+      "mape_pct": 35.5,
+      "mean_gt_g": 148.4
+    },
+    "rau_xanh": {
+      "n": 5,
+      "mae_g": 23.8,
+      "mape_pct": 35.1,
+      "mean_gt_g": 82.4
+    },
+    "com": {
+      "n": 1,
+      "mae_g": 35.5,
+      "mape_pct": 82.5,
+      "mean_gt_g": 43.0
+    },
+    "_overall": {
+      "n": 25,
+      "mae_g": 41.0,
+      "mape_pct": 41.1
+    }
+  },
+  "level_pricing_on_test": {
+    "n": 18,
+    "levels": [
+      "<150g",
+      "150-250g",
+      ">250g"
+    ],
+    "gt_level_counts": [
+      18,
+      0,
+      0
+    ],
+    "exact_level_acc": 0.889,
+    "within_1_level_acc": 1.0,
+    "base_rate_acc": 1.0,
+    "lift_over_base": -0.111,
+    "informative": false,
+    "note": "Chỉ số KHÔNG có nghĩa: mẫu dồn vào một mức, độ chính xác chỉ bằng base-rate. Cần dữ liệu suất ăn thật trải đều 3 mức."
+  },
+  "level_pricing_on_train": {
+    "n": 131,
+    "levels": [
+      "<150g",
+      "150-250g",
+      ">250g"
+    ],
+    "gt_level_counts": [
+      125,
+      5,
+      1
+    ],
+    "exact_level_acc": 0.916,
+    "within_1_level_acc": 0.992,
+    "base_rate_acc": 0.954,
+    "lift_over_base": -0.038,
+    "informative": false,
+    "note": "Chỉ số KHÔNG có nghĩa: mẫu dồn vào một mức, độ chính xác chỉ bằng base-rate. Cần dữ liệu suất ăn thật trải đều 3 mức."
+  },
+  "caveat": "Hệ số gắn với hình học camera/đĩa của Nutrition5k. Khi lắp camera thật phải hiệu chỉnh lại bằng cân điện tử."
+}

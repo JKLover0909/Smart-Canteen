@@ -1,0 +1,15 @@
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+pandas>=2.2.0
+numpy>=2.0.0
+scikit-learn>=1.5.0
+pydantic>=2.9.0
+python-multipart>=0.0.9
+
+# Thị giác: nhận diện + phân vùng món ăn trên khay
+ultralytics>=8.3.0
+opencv-python>=4.10.0
+pillow>=10.0.0
+
+# Đọc parquet FoodSeg103 / Nutrition5k (chỉ cần khi train / hiệu chỉnh)
+pyarrow>=17.0.0

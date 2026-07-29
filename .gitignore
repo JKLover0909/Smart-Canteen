@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+
+# Dữ liệu & model (tải/sinh lại bằng scripts/, quá lớn cho git)
+data/
+*.pt
+backend/runs/
+backend/storage/
+demo_out/
