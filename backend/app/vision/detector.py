@@ -27,12 +27,38 @@ from ..menu_config import FS103_TO_GROUP, GROUP_TO_IDX
 
 _BACKEND = Path(__file__).resolve().parents[2]
 
-# Ưu tiên model 103-class (chính xác hơn), fallback về model 16 nhóm tự train
-_DEFAULT_WEIGHTS = [
-    _BACKEND / "models" / "foodseg103-seg.pt",
-    _BACKEND / "models" / "canteen-seg.pt",
-    _BACKEND / "runs" / "canteen-seg" / "weights" / "best.pt",
-]
+
+def _is_jetson() -> bool:
+    flag = os.environ.get("JETSON", "").strip().lower()
+    if flag in ("1", "true", "yes", "on"):
+        return True
+    if flag in ("0", "false", "no", "off"):
+        return False
+    return Path("/etc/nv_tegra_release").exists()
+
+
+IS_JETSON = _is_jetson()
+
+# Jetson: ưu tiên canteen-seg (~20MB, nhẹ); desktop: foodseg103 chính xác hơn
+_DEFAULT_WEIGHTS = (
+    [
+        _BACKEND / "models" / "canteen-seg.pt",
+        _BACKEND / "models" / "foodseg103-seg.pt",
+        _BACKEND / "runs" / "canteen-seg" / "weights" / "best.pt",
+    ]
+    if IS_JETSON
+    else [
+        _BACKEND / "models" / "foodseg103-seg.pt",
+        _BACKEND / "models" / "canteen-seg.pt",
+        _BACKEND / "runs" / "canteen-seg" / "weights" / "best.pt",
+    ]
+)
+
+IMGSZ = int(os.environ.get("CANTEEN_IMGSZ", "512" if IS_JETSON else "640"))
+MAX_DET = int(os.environ.get("CANTEEN_MAX_DET", "20"))
+RETINA_MASKS = os.environ.get("CANTEEN_RETINA_MASKS", "0" if IS_JETSON else "1").strip() in (
+    "1", "true", "yes", "on",
+)
 
 # Tên class FoodSeg103 (chuẩn hoá lower/strip) -> nhóm món
 _FS103_ID2NAME = {
@@ -120,6 +146,7 @@ def load() -> tuple[object | None, dict]:
         m = YOLO(str(wp))
         device = "cuda" if torch.cuda.is_available() else "cpu"
         m.to(device)
+        use_half = device == "cuda"
         try:
             _cls_to_group, kind = _build_class_map(dict(m.names))
         except RuntimeError as e:
@@ -132,6 +159,9 @@ def load() -> tuple[object | None, dict]:
             "weights": wp.name,
             "weights_kind": kind,
             "device": device,
+            "half": use_half,
+            "imgsz": IMGSZ,
+            "jetson": IS_JETSON,
             "classes": len(m.names),
             "mapped_groups": sorted(set(_cls_to_group.values())),
         }
@@ -149,8 +179,17 @@ def segment(bgr: np.ndarray, conf: float = 0.25, iou: float = 0.5) -> list[dict]
     if model is None:
         raise RuntimeError(m.get("error", "model chưa sẵn sàng"))
 
+    device = m.get("device", "cpu")
     res = model.predict(
-        bgr, conf=conf, iou=iou, imgsz=640, verbose=False, retina_masks=True
+        bgr,
+        conf=conf,
+        iou=iou,
+        imgsz=IMGSZ,
+        verbose=False,
+        retina_masks=RETINA_MASKS,
+        max_det=MAX_DET,
+        device=device,
+        half=(device == "cuda"),
     )[0]
     if res.masks is None or len(res.boxes) == 0:
         return []

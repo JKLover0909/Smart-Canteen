@@ -18,10 +18,11 @@ def decode_image(raw: bytes) -> np.ndarray:
     bgr = cv2.imdecode(arr, cv2.IMREAD_COLOR)
     if bgr is None:
         raise ValueError("Không đọc được ảnh")
-    # giới hạn cạnh dài 1280 cho ổn định tốc độ
+    # Jetson: decode thẳng về ~imgsz; desktop giữ 1280
+    limit = detector.IMGSZ if detector.IS_JETSON else 1280
     h, w = bgr.shape[:2]
-    if max(h, w) > 1280:
-        s = 1280 / max(h, w)
+    if max(h, w) > limit:
+        s = limit / max(h, w)
         bgr = cv2.resize(bgr, (int(w * s), int(h * s)), interpolation=cv2.INTER_AREA)
     return bgr
 

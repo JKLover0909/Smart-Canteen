@@ -27,7 +27,7 @@ FRONTEND_PID=$!
 echo ""
 echo "✅ Smart-Canteen Demo"
 echo "   Frontend: http://localhost:5180"
-echo "   Backend:  http://localhost:8000/docs"
+echo "   Backend:  http://localhost:8002/docs"
 echo ""
 echo "Press Ctrl+C to stop"
 

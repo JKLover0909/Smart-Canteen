@@ -73,10 +73,10 @@ def get_history(days: int = Query(30, ge=7, le=90)):
 
 class RecalcItem(BaseModel):
     group: str
-    grams: float | None = None
-    count: int | None = None
-    pieces: int | None = None
-    bowls: int | None = None
+    grams: Optional[float] = None
+    count: Optional[int] = None
+    pieces: Optional[int] = None
+    bowls: Optional[int] = None
     area_cm2: float = 0.0
     n_regions: int = 1
     confidence: float = 1.0
@@ -89,7 +89,7 @@ class RecalcBody(BaseModel):
 
 class ConfirmBody(BaseModel):
     transaction_id: str
-    total_vnd: int | None = None
+    total_vnd: Optional[int] = None
 
 
 @app.get("/api/kiosk/menu")
